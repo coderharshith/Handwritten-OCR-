@@ -1,0 +1,35 @@
+# Environments
+.env
+.venv/
+venv/
+env/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Downloaded Models (Too large for Git)
+models/
+
+# Application Outputs and Logs
+output/
+logs/
+evaluation/
+test_images/
+
+# OS/IDE Files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# Temporary/Debug scripts
+test_multiline.py
+test_user_img.py
+test_user_img_fix.py
+test_full.py
+test_peaks.py
+debug_*.py
+create_*_sample.py
