@@ -1,110 +1,82 @@
-"""Evaluate OCR accuracy against ground truth."""
+"""Evaluate OCR accuracy against ground truth datasets."""
 import sys
 import argparse
-import json
 from pathlib import Path
 from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.recognizer import recognize_image
-from app.evaluator import evaluate_single, evaluate_batch, format_summary, format_per_image_table
+from ocr_core.config import EVALUATION_DIR, DEFAULT_PREPROCESSING
+from ocr_core.recognizer import recognize_image
+from ocr_core.evaluator import evaluate_single, evaluate_batch, format_summary, format_per_image_table
+from ocr_core.utils import setup_logging, save_text_output, save_json_output
 
 def main():
-    parser = argparse.ArgumentParser(description="Evaluate OCR accuracy against ground truth.")
-    parser.add_argument("--images-dir", type=str, default="evaluation/images", help="Directory containing evaluation images")
-    parser.add_argument("--gt-dir", type=str, default="evaluation/ground_truth", help="Directory containing ground truth text files")
-    parser.add_argument("--output-dir", type=str, default="evaluation/results", help="Directory to save evaluation results")
-    parser.add_argument("--preprocess", type=str, default=None, help="Preprocessing method to apply")
-    parser.add_argument("--single-line", action="store_true", help="Treat images as single lines (skip line detection)")
+    parser = argparse.ArgumentParser(description="Evaluate OCR accuracy against ground truth")
+    parser.add_argument("--images-dir", default=str(EVALUATION_DIR / "images"), help="Directory containing test images")
+    parser.add_argument("--gt-dir", default=str(EVALUATION_DIR / "ground_truth"), help="Directory containing ground truth .txt files")
+    parser.add_argument("--output-dir", default=str(EVALUATION_DIR / "results"), help="Directory to save evaluation results")
+    parser.add_argument("--preprocess", default=DEFAULT_PREPROCESSING, choices=["none", "light", "medium", "strong"], help="Preprocessing mode")
+    parser.add_argument("--single-line", action="store_true", help="Treat images as single lines")
     
     args = parser.parse_args()
+    setup_logging()
     
     images_dir = Path(args.images_dir)
     gt_dir = Path(args.gt_dir)
     output_dir = Path(args.output_dir)
-    
-    if not images_dir.exists():
-        print(f"Error: Images directory not found: {images_dir}")
-        return
-        
     output_dir.mkdir(parents=True, exist_ok=True)
     
-    image_files = list(images_dir.glob("*.*"))
-    image_files = [f for f in image_files if f.suffix.lower() in ('.png', '.jpg', '.jpeg')]
-    
-    if not image_files:
-        print(f"No images found in {images_dir}")
-        return
+    if not images_dir.exists():
+        print(f"Images directory not found: {images_dir}")
+        print("Please place test images in evaluation/images and ground truth in evaluation/ground_truth")
+        sys.exit(1)
         
-    results = []
+    image_files = sorted([f for f in images_dir.iterdir() if f.suffix.lower() in [".png", ".jpg", ".jpeg", ".tiff", ".bmp", ".pdf"]])
+    if not image_files:
+        print(f"No image files found in {images_dir}")
+        sys.exit(1)
+        
+    evaluations = []
+    print(f"Evaluating {len(image_files)} images...")
     
-    for img_path in tqdm(image_files, desc="Evaluating"):
+    for img_path in tqdm(image_files):
         gt_path = gt_dir / f"{img_path.stem}.txt"
         if not gt_path.exists():
-            print(f"Warning: Missing ground truth for {img_path.name}. Skipping.")
+            print(f"[SKIP] Ground truth file not found: {gt_path.name}")
             continue
             
-        with open(gt_path, 'r', encoding='utf-8') as f:
-            gt_text = f.read().strip()
+        with open(gt_path, "r", encoding="utf-8") as f:
+            ground_truth = f.read().strip()
             
         try:
-            recognition_result = recognize_image(
-                img_path, 
-                preprocess=args.preprocess,
-                single_line=args.single_line
-            )
-            
-            evaluation = evaluate_single(
-                reference=gt_text,
-                hypothesis=recognition_result.text,
-                image_name=img_path.name,
-                processing_time=recognition_result.total_processing_time_seconds
-            )
-            
-            results.append(evaluation)
-            
+            result = recognize_image(str(img_path), preprocess=args.preprocess, single_line=args.single_line)
+            evaluation = evaluate_single(ground_truth, result.text, image_name=img_path.name, processing_time=result.total_processing_time_seconds)
+            evaluations.append(evaluation)
         except Exception as e:
-            print(f"Error processing {img_path.name}: {e}")
+            print(f"[ERROR] Failed to process {img_path.name}: {e}")
             
-    if not results:
-        print("No valid results to summarize.")
-        return
+    if not evaluations:
+        print("No matching images and ground truth pairs evaluated.")
+        sys.exit(1)
         
-    summary = evaluate_batch(results)
-    
+    summary = evaluate_batch(evaluations)
     summary_text = format_summary(summary)
-    print("\n" + summary_text)
+    per_image_text = format_per_image_table(evaluations)
     
-    table_text = format_per_image_table(results)
-    print("\n" + table_text)
+    full_report = f"{summary_text}\n\n{per_image_text}"
+    print("\n" + full_report)
     
-    with open(output_dir / "evaluation_results.txt", "w", encoding='utf-8') as f:
-        f.write(summary_text + "\n\n" + table_text)
-        
-    json_results = {
+    save_text_output(full_report, output_dir / "evaluation_results.txt")
+    save_json_output({
         "total_images": summary.total_images,
         "avg_cer": summary.avg_cer,
         "avg_wer": summary.avg_wer,
         "char_accuracy": summary.char_accuracy,
         "word_accuracy": summary.word_accuracy,
-        "avg_time": summary.avg_time,
-        "results": [
-            {
-                "image": r.image_name,
-                "cer": r.cer,
-                "wer": r.wer,
-                "time": r.processing_time,
-                "ground_truth": r.ground_truth,
-                "recognized": r.recognized_text
-            } for r in results
-        ]
-    }
-    
-    with open(output_dir / "evaluation_results.json", "w", encoding='utf-8') as f:
-        json.dump(json_results, f, indent=4)
-        
+        "avg_time": summary.avg_time
+    }, output_dir / "evaluation_results.json")
     print(f"\nResults saved to {output_dir}")
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

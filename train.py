@@ -12,7 +12,7 @@ from torch.optim import AdamW
 from transformers import TrOCRProcessor, VisionEncoderDecoderModel
 
 sys.path.insert(0, str(Path(__file__).parent))
-from app.config import MODEL_PATH, DEVICE
+from ocr_core.config import MODEL_PATH, DEVICE
 
 class HandwritingDataset(Dataset):
     def __init__(self, root_dir, processor, max_length=128):
@@ -52,7 +52,7 @@ def compute_metrics(pred_strs, label_strs):
     return cer, wer
 
 def main():
-    parser = argparse.ArgumentParser(description="Fine-tune TrOCR")
+    parser = argparse.ArgumentParser(description="Fine-tune TrOCR on custom handwriting dataset")
     parser.add_argument("--dataset-dir", required=True, help="Path to dataset root")
     parser.add_argument("--output-dir", default="models/finetuned", help="Output directory")
     parser.add_argument("--epochs", type=int, default=3, help="Number of training epochs")
@@ -63,10 +63,10 @@ def main():
     args = parser.parse_args()
     
     from transformers import AutoImageProcessor, RobertaTokenizer
-    local_image_processor = AutoImageProcessor.from_pretrained(MODEL_PATH)
-    local_tokenizer = RobertaTokenizer.from_pretrained(MODEL_PATH)
+    local_image_processor = AutoImageProcessor.from_pretrained(str(MODEL_PATH))
+    local_tokenizer = RobertaTokenizer.from_pretrained(str(MODEL_PATH))
     processor = TrOCRProcessor(image_processor=local_image_processor, tokenizer=local_tokenizer)
-    model = VisionEncoderDecoderModel.from_pretrained(MODEL_PATH)
+    model = VisionEncoderDecoderModel.from_pretrained(str(MODEL_PATH))
     model.to(DEVICE)
     
     train_dataset = HandwritingDataset(Path(args.dataset_dir) / "train", processor, args.max_length)

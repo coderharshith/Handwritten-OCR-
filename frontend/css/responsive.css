@@ -1,0 +1,128 @@
+/* Laptop/Smaller Desktop (1024px - 1199px) */
+@media (max-width: 1199px) {
+    .split-section {
+        padding: 40px 15px 60px 15px;
+    }
+    .illustration-container {
+        height: 180px;
+    }
+    .login-card {
+        padding: 40px 30px 30px;
+        max-width: 380px;
+    }
+    .welcome-title {
+        font-size: 24px;
+    }
+}
+
+/* Tablet (768px - 1023px) */
+@media (max-width: 1023px) {
+    .split-section {
+        padding: 40px 10px 50px 10px;
+    }
+    .illustration-container {
+        height: 150px;
+        margin-bottom: -30px;
+    }
+    .login-card {
+        padding: 40px 20px 20px;
+        max-width: 340px;
+    }
+    .welcome-title {
+        font-size: 22px;
+    }
+    .welcome-subtitle {
+        font-size: 13px;
+    }
+    .top-logo {
+        width: 80px;
+    }
+    .or-badge {
+        width: 40px;
+        height: 40px;
+        font-size: 12px;
+    }
+}
+
+/* Mobile Layout (< 768px) */
+@media (max-width: 767px) {
+    .login-wrapper {
+        flex-direction: column;
+        overflow-y: auto;
+    }
+    
+    .center-divider, .or-badge {
+        display: none;
+    }
+    
+    .top-logo {
+        position: relative;
+        top: 0;
+        left: 0;
+        transform: none;
+        margin: 30px auto;
+        width: 90px;
+    }
+    
+    .split-section {
+        padding: 40px 20px 60px 20px;
+        width: 100%;
+    }
+    
+    /* Ensure the background gradients stack cleanly */
+    .split-left {
+        background: radial-gradient(circle at top center, var(--student-bg) 0%, var(--background) 80%);
+    }
+    
+    .split-right {
+        background: radial-gradient(circle at top center, var(--teacher-bg) 0%, var(--background) 80%);
+        border-top: 1px solid var(--border-light);
+    }
+    
+    .login-card {
+        width: calc(100% - 20px);
+        max-width: 420px;
+        padding: 40px 24px 30px;
+    }
+    
+    .illustration-container {
+        height: 180px;
+        margin-bottom: -40px;
+    }
+    
+    .footer {
+        position: relative;
+        bottom: 0;
+        transform: none;
+        left: 0;
+        padding: 30px 0;
+        background: var(--background);
+    }
+}
+
+/* Small Mobile (< 480px) */
+@media (max-width: 479px) {
+    .welcome-title {
+        font-size: 20px;
+    }
+    .illustration-container {
+        height: 150px;
+        margin-bottom: -30px;
+    }
+    .login-card {
+        padding: 40px 16px 20px;
+        width: 100%;
+        border-radius: 20px;
+    }
+    .card-title {
+        font-size: 22px;
+    }
+    .form-options {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+    .forgot-link {
+        align-self: flex-end;
+    }
+}

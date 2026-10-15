@@ -1,0 +1,70 @@
+:root {
+    /* Color Tokens */
+    --student-accent: #f43f5e;     /* Bright Pink */
+    --student-accent-hover: #e11d48;
+    --student-bg: #fff0f5;         /* Soft Pastel Pink */
+    
+    --teacher-accent: #6366f1;     /* Vivid Purple/Blue */
+    --teacher-accent-hover: #4f46e5;
+    --teacher-bg: #f0f4ff;         /* Soft Pastel Lavender/Blue */
+    
+    --primary-text: #111827;       /* Dark Navy/Charcoal */
+    --secondary-text: #6b7280;     /* Muted Gray */
+    --border-light: #e5e7eb;       /* Very Light Gray */
+    --background: #ffffff;
+    
+    /* Typography */
+    --font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, Roboto, Helvetica, Arial, sans-serif;
+    
+    /* Radii */
+    --card-radius: 24px;
+    --input-radius: 12px;
+    --button-radius: 12px;
+    
+    /* Shadows */
+    --card-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.08);
+    --badge-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    
+    /* Spacing & Transitions */
+    --transition-speed: 0.2s;
+}
+
+/* Base Reset */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-family: var(--font-family);
+    background-color: var(--background);
+    color: var(--primary-text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* Clean accessible focus states */
+:focus-visible {
+    outline: 2px solid var(--primary-text);
+    outline-offset: 2px;
+}
+
+/* Animations */
+@keyframes softFadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(15px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.fade-in {
+    animation: softFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}

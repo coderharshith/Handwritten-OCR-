@@ -8,24 +8,24 @@ from tqdm import tqdm
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from app.config import (
+from ocr_core.config import (
     PROJECT_ROOT, MODEL_NAME, OFFLINE_MODE, OUTPUT_DIR, 
     SUPPORTED_EXTENSIONS, DEFAULT_PREPROCESSING, 
     MAX_NEW_TOKENS, NUM_BEAMS, ensure_directories, apply_offline_env
 )
-from app.errors import OCRError
-from app.recognizer import recognize_image
-from app.utils import setup_logging, display_system_info, save_text_output, save_json_output
+from ocr_core.errors import OCRError
+from ocr_core.recognizer import recognize_image
+from ocr_core.utils import setup_logging, display_system_info, save_text_output, save_json_output
 
 def main():
     parser = argparse.ArgumentParser(description="Handwritten OCR - TrOCR Large CLI")
-    parser.add_argument("image_path", nargs="?", help="Path to input image")
-    parser.add_argument("--input", help="Path to input image")
+    parser.add_argument("image_path", nargs="?", help="Path to input image or booklet PDF")
+    parser.add_argument("--input", help="Path to input image or booklet PDF")
     parser.add_argument("--input-dir", help="Directory of images to process")
     parser.add_argument("--preprocess", default=DEFAULT_PREPROCESSING, choices=["none", "light", "medium", "strong"], help="Preprocessing mode")
     parser.add_argument("--offline", action="store_true", help="Force offline mode")
     parser.add_argument("--low-memory", action="store_true", help="Enable low memory mode")
-    parser.add_argument("--output", default=OUTPUT_DIR, help="Output directory")
+    parser.add_argument("--output", default=str(OUTPUT_DIR), help="Output directory")
     parser.add_argument("--json", action="store_true", help="Output JSON to stdout instead of normal text")
     parser.add_argument("--show-lines", action="store_true", help="Show detected line info")
     parser.add_argument("--single-line", action="store_true", help="Treat input as single text line")
@@ -35,14 +35,14 @@ def main():
     args = parser.parse_args()
     
     setup_logging()
-    logger = logging.getLogger(__name__)
+    logger = logging.getLogger("ocr")
     
     if args.offline:
-        os.environ["OFFLINE_MODE"] = "1"
+        os.environ["OFFLINE_MODE"] = "true"
         apply_offline_env()
     
     if args.low_memory:
-        os.environ["LOW_MEMORY_MODE"] = "1"
+        os.environ["LOW_MEMORY_MODE"] = "true"
     
     ensure_directories()
     
@@ -81,7 +81,9 @@ def main():
             result = recognize_image(
                 str(img_path),
                 preprocess=args.preprocess,
-                single_line=args.single_line
+                single_line=args.single_line,
+                max_new_tokens=args.max_tokens,
+                num_beams=args.num_beams
             )
             
             stem = img_path.stem

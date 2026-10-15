@@ -1,0 +1,347 @@
+/* Layout Wrapper */
+.login-wrapper {
+    position: relative;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: row;
+    background: var(--background);
+    overflow: hidden;
+}
+
+/* Center Divider & Logo (Desktop) */
+.center-divider {
+    position: absolute;
+    left: 50%;
+    top: 5%;
+    bottom: 5%;
+    width: 1px;
+    background: var(--border-light);
+    z-index: 10;
+}
+
+.top-logo {
+    position: absolute;
+    left: 50%;
+    top: 32px;
+    transform: translateX(-50%);
+    width: 100px;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+}
+.top-logo img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+}
+
+.or-badge {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: var(--background);
+    border: 1px solid var(--border-light);
+    border-radius: 50%;
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    color: var(--primary-text);
+    font-size: 14px;
+    z-index: 20;
+    box-shadow: var(--badge-shadow);
+}
+
+/* Split Sections */
+.split-section {
+    flex: 1;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px 20px 80px 20px;
+    animation: softFadeUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Very subtle backgrounds */
+.split-left {
+    background: radial-gradient(circle at left center, var(--student-bg) 0%, var(--background) 60%);
+}
+
+.split-right {
+    background: radial-gradient(circle at right center, var(--teacher-bg) 0%, var(--background) 60%);
+}
+
+/* Typography elements */
+.welcome-header {
+    text-align: center;
+    margin-bottom: 24px;
+    z-index: 5;
+}
+
+.welcome-title {
+    font-size: 28px;
+    font-weight: 800;
+    color: var(--primary-text);
+    margin-bottom: 8px;
+}
+
+.welcome-subtitle {
+    font-size: 15px;
+    color: var(--secondary-text);
+}
+
+/* Illustrations */
+.illustration-container {
+    height: 220px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    margin-bottom: -40px; /* Overlaps with card */
+    z-index: 1;
+    pointer-events: none;
+}
+.illustration {
+    height: 100%;
+    object-fit: contain;
+    filter: drop-shadow(0px 10px 20px rgba(0,0,0,0.05));
+}
+
+/* Login Card */
+.login-card {
+    background: var(--background);
+    border-radius: var(--card-radius);
+    padding: 50px 40px 40px;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: var(--card-shadow);
+    border: 1px solid var(--border-light);
+    position: relative;
+    z-index: 10;
+}
+
+/* Circular Badges */
+.card-badge {
+    position: absolute;
+    top: -24px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 24px;
+    border: 4px solid var(--background);
+}
+.badge-pink { background: var(--student-accent); }
+.badge-purple { background: var(--teacher-accent); }
+
+/* Card Typography */
+.card-title {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+.text-pink { color: var(--student-accent); }
+.text-purple { color: var(--teacher-accent); }
+
+.card-subtitle {
+    text-align: center;
+    font-size: 14px;
+    color: var(--secondary-text);
+    margin-bottom: 30px;
+}
+
+/* Form Elements */
+.login-form {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group {
+    position: relative;
+    margin-bottom: 16px;
+}
+.input-group i:first-child {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 18px;
+    pointer-events: none;
+}
+.input-group .eye-icon {
+    position: absolute;
+    left: auto;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    cursor: pointer;
+    font-size: 18px;
+    padding: 4px;
+}
+.input-field {
+    width: 100%;
+    padding: 14px 40px;
+    border: 1px solid var(--border-light);
+    border-radius: var(--input-radius);
+    font-family: inherit;
+    font-size: 14px;
+    color: var(--primary-text);
+    background: var(--background);
+    transition: all var(--transition-speed);
+}
+
+.split-left .input-field:focus {
+    outline: none;
+    border-color: var(--student-accent);
+    box-shadow: 0 0 0 3px rgba(244, 63, 94, 0.1);
+}
+.split-right .input-field:focus {
+    outline: none;
+    border-color: var(--teacher-accent);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+}
+
+/* Options Row */
+.form-options {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+    font-size: 13px;
+}
+.remember-me {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--secondary-text);
+    cursor: pointer;
+}
+.forgot-link {
+    text-decoration: none;
+    font-weight: 600;
+    transition: opacity var(--transition-speed);
+}
+.forgot-link:hover { opacity: 0.8; }
+.forgot-pink { color: var(--student-accent); }
+.forgot-purple { color: var(--teacher-accent); }
+
+/* Buttons */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    border: none;
+    border-radius: var(--button-radius);
+    color: white;
+    font-family: inherit;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    transition: all var(--transition-speed);
+}
+.btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+.btn-primary:active {
+    transform: translateY(0);
+}
+.btn-primary:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+}
+.btn-pink { background: var(--student-accent); }
+.btn-pink:hover { background: var(--student-accent-hover); }
+.btn-purple { background: var(--teacher-accent); }
+.btn-purple:hover { background: var(--teacher-accent-hover); }
+
+/* Separator */
+.separator {
+    display: flex;
+    align-items: center;
+    text-align: center;
+    margin: 24px 0;
+    color: #9ca3af;
+    font-size: 12px;
+}
+.separator::before, .separator::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid var(--border-light);
+}
+.separator::before { margin-right: 0.5em; }
+.separator::after { margin-left: 0.5em; }
+
+/* Outline Button */
+.btn-outline {
+    width: 100%;
+    padding: 14px;
+    background: transparent;
+    border-radius: var(--button-radius);
+    font-family: inherit;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-speed);
+}
+.btn-outline-pink {
+    border: 1px solid var(--student-accent);
+    color: var(--student-accent);
+}
+.btn-outline-pink:hover { background: #fff1f2; }
+
+.btn-outline-purple {
+    border: 1px solid var(--teacher-accent);
+    color: var(--teacher-accent);
+}
+.btn-outline-purple:hover { background: #eef2ff; }
+
+/* Inline Error */
+.inline-error {
+    background: #fee2e2;
+    color: #b91c1c;
+    padding: 10px 12px;
+    border-radius: 8px;
+    font-size: 13px;
+    margin-bottom: 16px;
+    border-left: 4px solid #ef4444;
+}
+
+/* Footer */
+.footer {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    text-align: center;
+    z-index: 20;
+}
+.footer-text {
+    font-size: 11px;
+    letter-spacing: 2px;
+    color: #9ca3af;
+    font-weight: 600;
+}
+.footer-accent-line {
+    width: 30px;
+    height: 2px;
+    background: var(--student-accent);
+    margin: 6px auto 0;
+    border-radius: 2px;
+}

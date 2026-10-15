@@ -8,9 +8,9 @@ from PIL import Image
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.config import PREPROCESSING_MODES
-from app.utils import is_blank_image
-from app.preprocessing import (
+from ocr_core.config import PREPROCESSING_MODES
+from ocr_core.utils import is_blank_image
+from ocr_core.preprocessing import (
     detect_orientation,
     denoise_image,
     enhance_contrast,
@@ -83,7 +83,6 @@ def test_threshold() -> None:
     img = create_synthetic_image()
     result = apply_threshold(img, "otsu")
     assert result is not None
-    # Binary image should only have 0 and 255
     unique = np.unique(result)
     assert all(v in [0, 255] for v in unique)
 

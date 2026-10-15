@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklet Evaluation System</title>
+    
+    <!-- Boxicons for crisp vector icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    
+    <!-- CSS Styles -->
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+
+    <main class="login-wrapper">
+        
+        <!-- Center Divider & Global Elements (Desktop Only) -->
+        <div class="center-divider"></div>
+        <div class="or-badge">OR</div>
+        
+        <!-- Official Logo -->
+        <div class="top-logo">
+            <img src="assets/logo.png" alt="Official Portal Logo">
+        </div>
+
+        <!-- ================= LEFT: STUDENT SECTION ================= -->
+        <section class="split-section split-left">
+            <div class="welcome-header">
+                <h1 class="welcome-title">Welcome Back!</h1>
+                <p class="welcome-subtitle">Login to access your student portal</p>
+            </div>
+            
+            <div class="illustration-container">
+                <img src="assets/student.png" alt="Student Illustration" class="illustration">
+            </div>
+
+            <div class="login-card">
+                <div class="card-badge badge-pink">
+                    <i class='bx bxs-graduation'></i>
+                </div>
+                
+                <h2 class="card-title"><span class="text-pink">Student</span> Login</h2>
+                <p class="card-subtitle">Access your courses, assignments and more</p>
+                
+                <form id="student-login-form" class="login-form">
+                    <div class="input-group">
+                        <i class='bx bx-user'></i>
+                        <input type="text" id="student_user" name="username" class="input-field" placeholder="Username or Gmail" required aria-label="Student Username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class='bx bx-lock-alt'></i>
+                        <input type="password" id="student_pwd" name="password" class="input-field" placeholder="Password" required aria-label="Student Password">
+                        <i class='bx bx-show eye-icon' tabindex="0" role="button" aria-label="Toggle password visibility" onclick="togglePassword('student_pwd')"></i>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link forgot-pink">Forgot password?</a>
+                    </div>
+                    
+                    <div id="student-error" class="inline-error" style="display: none;"></div>
+                    
+                    <button type="submit" class="btn-primary btn-pink" id="student-btn">
+                        <span>Login as Student</span> <i class='bx bx-right-arrow-alt'></i>
+                    </button>
+                </form>
+                
+            </div>
+        </section>
+
+
+        <!-- ================= RIGHT: TEACHER SECTION ================= -->
+        <section class="split-section split-right">
+            <div class="welcome-header">
+                <h1 class="welcome-title">Welcome Back!</h1>
+                <p class="welcome-subtitle">Login to access your teacher portal</p>
+            </div>
+            
+            <div class="illustration-container">
+                <img src="assets/teacher.png" alt="Teacher Illustration" class="illustration">
+            </div>
+
+            <div class="login-card">
+                <div class="card-badge badge-purple">
+                    <i class='bx bxs-group'></i>
+                </div>
+                
+                <h2 class="card-title"><span class="text-purple">Teacher</span> Login</h2>
+                <p class="card-subtitle">Manage your classes, students and evaluations</p>
+                
+                <form id="teacher-login-form" class="login-form">
+                    <div class="input-group">
+                        <i class='bx bx-user'></i>
+                        <input type="text" id="teacher_user" name="username" class="input-field" placeholder="Username or Gmail" required aria-label="Teacher Username">
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class='bx bx-lock-alt'></i>
+                        <input type="password" id="teacher_pwd" name="password" class="input-field" placeholder="Password" required aria-label="Teacher Password">
+                        <i class='bx bx-show eye-icon' tabindex="0" role="button" aria-label="Toggle password visibility" onclick="togglePassword('teacher_pwd')"></i>
+                    </div>
+                    
+                    <div class="form-options">
+                        <label class="remember-me">
+                            <input type="checkbox" name="remember"> Remember me
+                        </label>
+                        <a href="#" class="forgot-link forgot-purple">Forgot password?</a>
+                    </div>
+                    
+                    <div id="teacher-error" class="inline-error" style="display: none;"></div>
+                    
+                    <button type="submit" class="btn-primary btn-purple" id="teacher-btn">
+                        <span>Login as Teacher</span> <i class='bx bx-right-arrow-alt'></i>
+                    </button>
+                </form>
+                
+            </div>
+        </section>
+
+
+        
+    </main>
+
+    <!-- JS Scripts -->
+    <script src="js/login.js?v=2"></script>
+</body>
+</html>

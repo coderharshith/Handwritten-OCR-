@@ -9,11 +9,11 @@ sys.path.insert(0, str(Path(__file__).parent))
 
 import gradio as gr
 from PIL import Image
-from app.config import (
+from ocr_core.config import (
     OFFLINE_MODE, MODEL_NAME, ensure_directories, apply_offline_env
 )
-from app.recognizer import recognize_pil_image
-from app.utils import setup_logging, display_system_info
+from ocr_core.recognizer import recognize_pil_image
+from ocr_core.utils import setup_logging, display_system_info
 
 def process_image(image, preprocess_mode, mode):
     if image is None:
@@ -34,7 +34,6 @@ def process_image(image, preprocess_mode, mode):
         warnings_str = "\n".join(result.warnings) if result.warnings else "None"
         time_str = f"{result.total_processing_time_seconds:.2f} seconds"
         
-        # Compute average quality score from lines
         if result.lines:
             avg_quality = sum(l.quality_score for l in result.lines) / len(result.lines)
             quality_str = f"{avg_quality:.2f} — {'Good' if avg_quality > 0.6 else 'Needs Review'}"
@@ -55,7 +54,7 @@ def main():
     with gr.Blocks(title="Handwritten OCR") as demo:
         gr.Markdown(f"# 📝 Handwritten OCR — {MODEL_NAME}")
         offline_badge = "✅" if OFFLINE_MODE else "❌"
-        gr.Markdown(f"**OFFLINE MODE:** {offline_badge} | **CPU MODE:** ✅ | **TrOCR Large Handwritten**")
+        gr.Markdown(f"**OFFLINE MODE:** {offline_badge} | **TrOCR Large Handwritten**")
         
         with gr.Row():
             with gr.Column():

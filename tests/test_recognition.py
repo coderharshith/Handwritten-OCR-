@@ -6,9 +6,9 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.recognizer import RecognitionResult, LineRecognition
-from app.postprocessor import postprocess_text, detect_ocr_issues, assemble_lines
-from app.config import MODEL_PATH, MODEL_NAME, DEVICE, OFFLINE_MODE
+from ocr_core.recognizer import RecognitionResult, LineRecognition
+from ocr_core.postprocessor import postprocess_text, detect_ocr_issues, assemble_lines
+from ocr_core.config import MODEL_PATH, MODEL_NAME, DEVICE, OFFLINE_MODE
 
 
 def test_recognition_result_structure() -> None:
@@ -57,8 +57,8 @@ def test_result_to_dict() -> None:
 
 def test_invalid_image_path() -> None:
     """Test recognize_image with bad path raises error."""
-    from app.recognizer import recognize_image
-    from app.errors import RecognitionError
+    from ocr_core.recognizer import recognize_image
+    from ocr_core.errors import RecognitionError
     with pytest.raises((RecognitionError, Exception)):
         recognize_image("invalid/path/to/image.jpg")
 
@@ -107,8 +107,7 @@ def test_assemble_lines() -> None:
 def test_integration_single_line() -> None:
     """Integration test: recognize a synthetic image."""
     from PIL import Image
-    from app.recognizer import recognize_pil_image
-    # Create a white image (should produce some output without crashing)
+    from ocr_core.recognizer import recognize_pil_image
     img = Image.new("RGB", (200, 50), color="white")
     result = recognize_pil_image(img, preprocess="none", single_line=True)
     assert result.success is True

@@ -1,31 +1,52 @@
-# Environments
+# Environments and Virtual Envs
 .env
 .venv/
 venv/
 env/
+ENV/
 
-# Python Cache
+# Python Cache & Bytecode
 __pycache__/
-*.pyc
-*.pyo
+*.py[cod]
+*$py.class
 *.pyd
 
-# Downloaded Models (Too large for Git)
-models/
+# Large Model Weights (> 100MB, downloaded via download_model.py)
+/models/
+*.safetensors
+*.bin
+*.pt
+*.onnx
 
-# Application Outputs and Logs
-output/
-logs/
-evaluation/
-test_images/
+# Application Data, Booklets, and Large Uploads
+booklet.zip
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.pdf
+/inputs/
+/input/
+/output/
+/logs/
+/evaluation/
+/result/
+/student_results/
+/scratch/
 
-# OS/IDE Files
+# Local SQLite databases (MySQL is the production DB)
+*.db
+*.sqlite
+*.sqlite3
+backend/*.db
+
+# OS & IDE Files
 .DS_Store
 Thumbs.db
 .vscode/
 .idea/
 
-# Temporary/Debug scripts
+# Temporary / Debug files
 test_multiline.py
 test_user_img.py
 test_user_img_fix.py

@@ -6,7 +6,7 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.evaluator import (
+from ocr_core.evaluator import (
     compute_cer,
     compute_wer,
     evaluate_single,

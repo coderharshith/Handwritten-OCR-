@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Student Portal</title>
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="css/global.css">
+    <link rel="stylesheet" href="css/login.css">
+    <link rel="stylesheet" href="css/responsive.css">
+</head>
+<body>
+    <main class="login-wrapper">
+        <section class="split-section split-left" style="width: 100%; max-width: 100%; background: var(--background);">
+            
+            <div class="top-logo" style="position: relative; margin-bottom: 20px;">
+                <img src="assets/logo.png" alt="Official Portal Logo">
+            </div>
+
+            <div class="login-card" style="margin-top: 20px;">
+                <div class="card-badge badge-pink">
+                    <i class='bx bxs-user-plus'></i>
+                </div>
+                
+                <h2 class="card-title">Create <span class="text-pink">Student</span> Account</h2>
+                <p class="card-subtitle">Join the portal to access your materials</p>
+                
+                <form id="student-register-form" class="login-form">
+                    
+                    <div class="input-group">
+                        <i class='bx bx-id-card'></i>
+                        <input type="text" name="full_name" class="input-field" placeholder="Full Name" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class='bx bx-envelope'></i>
+                        <input type="email" name="email" class="input-field" placeholder="Email Address" required>
+                    </div>
+
+                    <div class="input-group">
+                        <i class='bx bx-user'></i>
+                        <input type="text" name="username" class="input-field" placeholder="Choose a Username" required>
+                    </div>
+                    
+                    <div class="input-group">
+                        <i class='bx bx-lock-alt'></i>
+                        <input type="password" id="reg_student_pwd" name="password" class="input-field" placeholder="Create Password" required>
+                        <i class='bx bx-show eye-icon' onclick="togglePassword('reg_student_pwd')"></i>
+                    </div>
+                    
+                    <div id="student-register-error" class="inline-error" style="display: none;"></div>
+                    <div id="student-register-success" class="inline-error" style="display: none; background: #dcfce7; color: #166534; border-left-color: #22c55e;"></div>
+                    
+                    <button type="submit" class="btn-primary btn-pink" style="margin-top: 10px;">
+                        <span>Register Account</span> <i class='bx bx-check'></i>
+                    </button>
+                </form>
+                
+                <div class="separator">Already have an account?</div>
+                
+                <button type="button" class="btn-outline btn-outline-pink" onclick="window.location.href='index.html'">
+                    Back to Login
+                </button>
+            </div>
+        </section>
+    </main>
+    
+    <script>
+        function togglePassword(inputId) {
+            const input = document.getElementById(inputId);
+            const icon = input.nextElementSibling;
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.classList.remove('bx-show');
+                icon.classList.add('bx-hide');
+            } else {
+                input.type = 'password';
+                icon.classList.remove('bx-hide');
+                icon.classList.add('bx-show');
+            }
+        }
+
+        document.getElementById('student-register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const form = e.target;
+            const btn = form.querySelector('button[type="submit"]');
+            const errDiv = document.getElementById('student-register-error');
+            const sucDiv = document.getElementById('student-register-success');
+            
+            errDiv.style.display = 'none';
+            sucDiv.style.display = 'none';
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = `<i class='bx bx-loader-alt bx-spin'></i> <span>Registering...</span>`;
+            btn.disabled = true;
+
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+
+            try {
+                const res = await fetch('/api/auth/student/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+                
+                if (res.ok) {
+                    sucDiv.textContent = "Registration successful! Redirecting to login...";
+                    sucDiv.style.display = 'block';
+                    setTimeout(() => window.location.href = 'index.html', 2000);
+                } else {
+                    const err = await res.json();
+                    errDiv.textContent = err.detail || "Registration failed.";
+                    errDiv.style.display = 'block';
+                    btn.disabled = false;
+                    btn.innerHTML = origHTML;
+                }
+            } catch (error) {
+                errDiv.textContent = "Network error.";
+                errDiv.style.display = 'block';
+                btn.disabled = false;
+                btn.innerHTML = origHTML;
+            }
+        });
+    </script>
+</body>
+</html>

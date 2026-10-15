@@ -1,4 +1,4 @@
-"""Tests for model loading, CPU detection, offline mode."""
+"""Tests for model loading, CPU/GPU detection, offline mode."""
 import os
 import sys
 from pathlib import Path
@@ -7,15 +7,15 @@ import pytest
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from app.config import DEVICE, MODEL_PATH, apply_offline_env
-from app.model import TrOCRModel
-from app.errors import ModelNotFoundError
-from app.utils import get_system_info
+from ocr_core.config import DEVICE, MODEL_PATH, apply_offline_env
+from ocr_core.model import TrOCRModel
+from ocr_core.errors import ModelNotFoundError
+from ocr_core.utils import get_system_info
 
 
-def test_cpu_device() -> None:
-    """Test CPU device configuration."""
-    assert DEVICE == "cpu"
+def test_device_config() -> None:
+    """Test device configuration (cpu or cuda)."""
+    assert DEVICE in ["cpu", "cuda"]
 
 
 def test_model_singleton() -> None:
@@ -32,7 +32,6 @@ def test_get_instance() -> None:
 def test_model_not_found_error() -> None:
     """Test loading from non-existent path raises error."""
     model = TrOCRModel()
-    # Reset singleton state for this test
     original_loaded = TrOCRModel._loaded
     TrOCRModel._loaded = False
     try:

@@ -1,4 +1,2 @@
-"""Handwritten OCR Application using TrOCR Large Handwritten."""
-
-__version__ = "1.0.0"
-__model__ = "microsoft/trocr-large-handwritten"
+"""Backwards-compatibility alias for ocr_core."""
+from ocr_core import *

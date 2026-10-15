@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booklet Evaluation System - Teacher Dashboard</title>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header class="app-header">
+        <div class="container header-content">
+            <div class="header-left">
+                <img src="assets/logo.png" alt="Logo" class="logo">
+                <div class="product-title">
+                    <h1>Booklet Evaluation System</h1>
+                    <span>Teacher Dashboard</span>
+                </div>
+            </div>
+            
+            <nav class="header-nav">
+                <a href="teacher-dashboard.html" id="nav-home" class="nav-item active">
+                    <i class='bx bx-home-alt'></i> Home
+                </a>
+                <a href="student-results.html" id="nav-results" class="nav-item">
+                    <i class='bx bx-bar-chart-square'></i> Student Results
+                </a>
+                <a href="student-management.html" id="nav-manage" class="nav-item">
+                    <i class='bx bx-group'></i> Manage Students
+                </a>
+            </nav>
+            
+            <div class="header-right">
+                <div class="profile-section" onclick="logout()">
+                    <div class="avatar">T</div>
+                    <div class="profile-info">
+                        <span class="profile-name">Teacher</span>
+                        <span class="profile-role">Faculty Account</span>
+                    </div>
+                    <i class='bx bx-chevron-down'></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <!-- WELCOME BANNER -->
+        <section class="welcome-banner">
+            <div class="banner-content">
+                <h2>Welcome Back, Teacher!</h2>
+                <p>Upload booklets, run OCR and get results quickly.</p>
+            </div>
+            <img src="assets/books.png" alt="Books Illustration" class="banner-illustration">
+        </section>
+
+        <!-- TAB: HOME / EVALUATE BOOKLETS -->
+        <main class="main-grid tab-content active" id="tab-home">
+            <!-- LEFT COLUMN: CONTROLS -->
+            <div class="grid-column">
+                <!-- UPLOAD STUDENT BOOKLET -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class='bx bx-file'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Upload Student PDFs or ZIP</h3>
+                            <p>Upload scanned answer booklets for evaluation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-box" id="studentUploadBox">
+                        <input type="file" id="studentFile" accept=".pdf,.zip" onchange="handleFileSelect('student')">
+                        <i class='bx bx-cloud-upload upload-icon'></i>
+                        <div class="upload-text">Drag & drop files here</div>
+                        <div class="upload-or">or</div>
+                        <button class="btn-upload">Choose Files</button>
+                        <div class="upload-footer">Supported formats: PDF, ZIP &nbsp;|&nbsp; Max size: 500 MB</div>
+                    </div>
+                    
+                    <div class="file-list" id="studentFileList">
+                        <div class="file-item">
+                            <div class="file-info">
+                                <i class='bx bxs-file-pdf' style="color: var(--text-secondary); font-size: 20px;"></i>
+                                <div>
+                                    <div class="file-name" id="studentFileName">filename.pdf</div>
+                                    <div class="file-size" id="studentFileSize">1.2 MB</div>
+                                </div>
+                            </div>
+                            <button class="btn-remove" onclick="removeFile('student')"><i class='bx bx-x'></i></button>
+                        </div>
+                    </div>
+                    <div id="studentDetectionCard" style="display: none; margin-top: 12px;"></div>
+                </div>
+
+                <!-- UPLOAD ANSWER KEY -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class='bx bx-key'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Upload Answer Key (Optional)</h3>
+                            <p>Upload the answer key for automatic evaluation</p>
+                        </div>
+                    </div>
+                    
+                    <div class="upload-box" id="keyUploadBox">
+                        <input type="file" id="keyFile" accept=".pdf" onchange="handleFileSelect('key')">
+                        <i class='bx bx-cloud-upload upload-icon'></i>
+                        <div class="upload-text">Drag & drop file here</div>
+                        <div class="upload-or">or</div>
+                        <button class="btn-upload">Choose File</button>
+                        <div class="upload-footer">Supported format: PDF &nbsp;|&nbsp; Max size: 100 MB</div>
+                    </div>
+                    
+                    <div class="file-list" id="keyFileList">
+                        <div class="file-item">
+                            <div class="file-info">
+                                <i class='bx bxs-file-pdf' style="color: var(--text-secondary); font-size: 20px;"></i>
+                                <div>
+                                    <div class="file-name" id="keyFileName">key.pdf</div>
+                                    <div class="file-size" id="keyFileSize">0.5 MB</div>
+                                </div>
+                            </div>
+                            <button class="btn-remove" onclick="removeFile('key')"><i class='bx bx-x'></i></button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- PROCESSING OPTIONS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class='bx bx-cog'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Processing Options</h3>
+                            <p>Choose evaluation settings</p>
+                        </div>
+                    </div>
+                    
+                    <div class="options-grid">
+                        <div class="form-group">
+                            <label>Preprocessing Mode</label>
+                            <select id="preprocessMode" class="select-control">
+                                <option value="none">None</option>
+                                <option value="light" selected>Light (Fast)</option>
+                                <option value="medium">Medium</option>
+                                <option value="strong">Strong</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Recognition Mode</label>
+                            <select id="recognitionMode" class="select-control">
+                                <option value="Full Page" selected>Full Page (Recommended)</option>
+                                <option value="Single Line">Single Line (Faster)</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn-primary" id="runBtn" onclick="runOCR()">
+                        <i class='bx bx-play'></i> <span id="runBtnText">Run OCR</span>
+                    </button>
+                    <div id="runError" style="color: var(--error-main); font-size: 13px; margin-top: 8px; display: none;"></div>
+                </div>
+            </div>
+
+            <!-- RIGHT COLUMN: RESULTS -->
+            <div class="grid-column">
+                
+                <!-- OCR RESULTS -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container purple">
+                            <i class='bx bx-file-blank'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>OCR Results</h3>
+                            <p>Recognized text from the uploaded booklets</p>
+                        </div>
+                    </div>
+                    
+                    <div class="result-viewer" id="resultViewer">
+                        <div class="empty-state">
+                            <i class='bx bx-text'></i>
+                            <p>No OCR results yet<br>Upload a booklet and run OCR to see recognized text here.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- STATISTICS & DOWNLOADS -->
+                <div class="card">
+                    <div class="card-header" style="margin-bottom: 16px;">
+                        <div class="icon-container purple" style="width: 40px; height: 40px; font-size: 20px;">
+                            <i class='bx bx-bar-chart-alt-2'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3 style="font-size: 16px;">Result Statistics</h3>
+                        </div>
+                    </div>
+                    
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <span class="stat-label">Processing Time</span>
+                            <span class="stat-value" id="statTime">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Recognition Quality</span>
+                            <span class="stat-value" id="statQuality">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Lines Detected</span>
+                            <span class="stat-value" id="statLines">-</span>
+                        </div>
+                        <div class="stat-box">
+                            <span class="stat-label">Warnings</span>
+                            <span class="stat-value" id="statWarnings">-</span>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: 24px; border-top: 1px solid var(--border-light); padding-top: 24px;">
+                        <h3 style="font-size: 16px; font-weight: 700; color: var(--text-primary); margin-bottom: 16px;">Download Results</h3>
+                        
+                        <div id="downloadEmptyState" style="font-size: 14px; color: var(--text-secondary);">
+                            Results will appear here after OCR is completed.
+                        </div>
+                        
+                        <div class="downloads-container" id="downloadActions" style="display: none;">
+                            <button class="btn-secondary" onclick="downloadCSV('qa')">
+                                <i class='bx bx-download'></i> Download Q&A (Excel CSV)
+                            </button>
+                            <button class="btn-secondary" onclick="downloadCSV('result')">
+                                <i class='bx bx-download'></i> Download Full Result (Excel CSV)
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </main>
+        </main>
+
+        <!-- TAB: MANAGE STUDENTS -->
+        <main class="main-grid tab-content" id="tab-students" style="display: none;">
+            <div class="grid-column">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container">
+                            <i class='bx bx-user-plus'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Add Authorized Student</h3>
+                            <p>Register a new student account</p>
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 16px;">
+                        <label>Student Username</label>
+                        <input type="text" id="addUsername" class="select-control" style="background-image: none;" placeholder="e.g. file name">
+                    </div>
+                    <div class="form-group" style="margin-bottom: 24px;">
+                        <label>Student Password</label>
+                        <input type="password" id="addPassword" class="select-control" style="background-image: none;" placeholder="Password">
+                    </div>
+                    <button class="btn-primary" onclick="addStudent()">Add Student</button>
+                </div>
+                
+                <div class="card">
+                    <div class="card-header">
+                        <div class="icon-container" style="background-color: var(--error-bg); color: var(--error-main);">
+                            <i class='bx bx-user-minus'></i>
+                        </div>
+                        <div class="card-title">
+                            <h3>Remove Authorized Student</h3>
+                            <p>Delete an existing student account</p>
+                        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="app-footer">
+        <div class="container footer-content">
+            <div class="footer-left">
+                <h4>Booklet Evaluation System</h4>
+                <p>Evaluate • Track • Empower Learning</p>
+            </div>
+            <div class="footer-right">
+                <i class='bx bx-bulb'></i> Making Evaluation Simpler
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPT -->
+    <script>
+        // Check Auth
+        document.addEventListener('DOMContentLoaded', () => {
+            const token = localStorage.getItem('teacher_token');
+            if (!token) {
+                window.location.href = 'index.html';
+            }
+            
+            // Setup Drag & Drop
+            setupDragAndDrop('studentUploadBox', 'studentFile');
+            setupDragAndDrop('keyUploadBox', 'keyFile');
+        });
+
+        // Navigation Tab Switching
+        function switchTab(tabId, element) {
+            // Update active state in nav
+            document.querySelectorAll('.nav-item').forEach(el => el.classList.remove('active'));
+            if(element) element.classList.add('active');
+            
+            // Switch content views
+            document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+            document.getElementById(tabId).style.display = 'grid';
+        }
+
+        // Setup Tab Listeners
+        document.getElementById('nav-home').addEventListener('click', (e) => { e.preventDefault(); switchTab('tab-home', e.currentTarget); });
+
+        function logout() {
+            localStorage.removeItem('teacher_token');
+            window.location.href = 'index.html';
+        }
+
+        // --- File Upload Logic ---
+        let files = {
+            student: null,
+            key: null
+        };
+
+        function setupDragAndDrop(boxId, inputId) {
+            const box = document.getElementById(boxId);
+            const input = document.getElementById(inputId);
+
+            box.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                box.classList.add('dragover');
+            });
+
+            box.addEventListener('dragleave', () => {
+                box.classList.remove('dragover');
+            });
+
+            box.addEventListener('drop', (e) => {
+                e.preventDefault();
+                box.classList.remove('dragover');
+                
+                if (e.dataTransfer.files.length) {
+                    input.files = e.dataTransfer.files;
+                    handleFileSelect(inputId === 'studentFile' ? 'student' : 'key');
+                }
+            });
+        }
+
+        function formatBytes(bytes, decimals = 2) {
+            if (!+bytes) return '0 Bytes';
+            const k = 1024;
+            const dm = decimals < 0 ? 0 : decimals;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return `${parseFloat((bytes / Math.pow(k, i)).toFixed(dm))} ${sizes[i]}`;
+        }
+
+        let _currentStudentInfo = null;
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            return String(str)
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+
+        function getInitials(name) {
+            if (!name) return 'ST';
+            const parts = name.trim().split(/\s+/);
+            if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
+            return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
+        }
+
+        async function checkStudentStatus(fileStem) {
+            const card = document.getElementById('studentDetectionCard');
+            if (!card) return;
+            try {
+                const token = localStorage.getItem('teacher_token');
+                const res = await fetch(`/api/teachers/students/check?query=${encodeURIComponent(fileStem)}`, {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+                const data = await res.json();
+                
+                if (data.status === 'success') {
+                    if (data.exists && data.student) {
+                        _currentStudentInfo = data.student;
+                        card.innerHTML = `
+                            <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class='bx bxs-user-check' style="color: #059669; font-size: 22px;"></i>
+                                    <div>
+                                        <div style="font-weight: 700; color: #065f46; font-size: 13px;">${escapeHtml(data.student.full_name)}</div>
+                                        <div style="font-size: 12px; color: #047857;">USN / Username: <strong>${escapeHtml(data.student.usn)}</strong></div>
+                                    </div>
+                                </div>
+                                <span style="background: #10b981; color: white; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600;">Verified Student</span>
+                            </div>
+                        `;
+                        card.style.display = 'block';
+                    } else {
+                        const usn = data.suggested_usn || fileStem;
+                        _currentStudentInfo = { usn: usn, full_name: "", is_new: true };
+                        card.innerHTML = `
+                            <div style="background: #fff7ed; border: 1px solid #fed7aa; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class='bx bx-user-plus' style="color: #ea580c; font-size: 22px;"></i>
+                                    <div>
+                                        <div style="font-weight: 700; color: #9a3412; font-size: 13px;">New Student Detected</div>
+                                        <div style="font-size: 12px; color: #c2410c;">USN: <strong>${escapeHtml(usn)}</strong> &bull; Full name required</div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn-secondary" style="font-size: 12px; padding: 5px 12px; font-weight: 600;" onclick="openStudentNameModal('${escapeHtml(usn)}', '')">
+                                    <i class='bx bx-edit'></i> Set Name
+                                </button>
+                            </div>
+                        `;
+                        card.style.display = 'block';
+                    }
+                }
+            } catch (e) {
+                console.warn("Could not check student:", e);
+            }
+        }
+
+        function openStudentNameModal(usn, currentName) {
+            document.getElementById('modalStudentUsn').value = usn || '';
+            document.getElementById('modalStudentFullName').value = (currentName && currentName !== usn) ? currentName : '';
+            document.getElementById('studentNameModal').style.display = 'flex';
+            setTimeout(() => {
+                const inp = document.getElementById('modalStudentFullName');
+                if (inp) inp.focus();
+            }, 100);
+        }
+
+        function closeStudentNameModal() {
+            document.getElementById('studentNameModal').style.display = 'none';
+        }
+
+        async function confirmStudentNameAndSave() {
+            const usn = document.getElementById('modalStudentUsn').value.trim();
+            const fullName = document.getElementById('modalStudentFullName').value.trim();
+            if (!fullName) {
+                alert("Please enter the student's full name.");
+                return;
+            }
+            
+            try {
+                const token = localStorage.getItem('teacher_token');
+                const res = await fetch('/api/teachers/students/update-name', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ usn, full_name: fullName })
+                });
+                const data = await res.json();
+                if (data.status === 'success') {
+                    closeStudentNameModal();
+                    _currentStudentInfo = { usn, full_name: fullName, is_new: false };
+                    
+                    // Re-render student badge in detection card
+                    const card = document.getElementById('studentDetectionCard');
+                    if (card) {
+                        card.innerHTML = `
+                            <div style="background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 10px 14px; display: flex; align-items: center; justify-content: space-between;">
+                                <div style="display: flex; align-items: center; gap: 10px;">
+                                    <i class='bx bxs-user-check' style="color: #059669; font-size: 22px;"></i>
+                                    <div>
+                                        <div style="font-weight: 700; color: #065f46; font-size: 13px;">${escapeHtml(fullName)}</div>
+                                        <div style="font-size: 12px; color: #047857;">USN / Username: <strong>${escapeHtml(usn)}</strong></div>
+                                    </div>
+                                </div>
+                                <span style="background: #10b981; color: white; font-size: 11px; padding: 3px 10px; border-radius: 12px; font-weight: 600;">Saved</span>
+                            </div>
+                        `;
+                        card.style.display = 'block';
+                    }
+                    
+                    // Update results banner if already rendered
+                    const bannerName = document.getElementById('resBannerStudentName');
+                    if (bannerName) bannerName.textContent = fullName;
+                    const bannerAvatar = document.getElementById('resBannerAvatar');
+                    if (bannerAvatar) bannerAvatar.textContent = getInitials(fullName);
+                } else {
+                    alert(data.message || "Failed to update student name.");
+                }
+            } catch (e) {
+                alert("Error updating student name: " + e.message);
+            }
+        }
+
+        function handleFileSelect(type) {
+            const input = document.getElementById(`${type}File`);
+            if (input.files.length === 0) return;
+            
+            const file = input.files[0];
+            
+            // Basic Validation
+            const errDiv = document.getElementById('runError');
+            errDiv.style.display = 'none';
+            
+            if (type === 'student' && !file.name.match(/\.(pdf|zip)$/i)) {
+                showError("Student booklet must be a PDF or ZIP.");
+                input.value = "";
+                return;
+            }
+            if (type === 'key' && !file.name.match(/\.pdf$/i)) {
+                showError("Answer key must be a PDF.");
+                input.value = "";
+                return;
+            }
+
+            files[type] = file;
+            
+            // Update UI
+            document.getElementById(`${type}UploadBox`).style.display = 'none';
+            document.getElementById(`${type}FileList`).style.display = 'block';
+            document.getElementById(`${type}FileName`).innerText = file.name;
+            document.getElementById(`${type}FileSize`).innerText = formatBytes(file.size);
+
+            if (type === 'student') {
+                const stem = file.name.replace(/\.[^/.]+$/, "");
+                checkStudentStatus(stem);
+            }
+        }
+
+        function removeFile(type) {
+            files[type] = null;
+            document.getElementById(`${type}File`).value = "";
+            document.getElementById(`${type}UploadBox`).style.display = 'block';
+            document.getElementById(`${type}FileList`).style.display = 'none';
+            if (type === 'student') {
+                _currentStudentInfo = null;
+                const card = document.getElementById('studentDetectionCard');
+                if (card) { card.style.display = 'none'; card.innerHTML = ''; }
+            }
+        }
+
+        function showError(msg) {
+            const errDiv = document.getElementById('runError');
+            errDiv.innerText = msg;
+            errDiv.style.display = 'block';
+        }
+
+        // --- API Integration ---
+        async function runOCR() {
+            if (!files.student) {
+                showError("Please upload a student booklet first.");
+                return;
+            }
+            
+            const runBtn = document.getElementById('runBtn');
+            const runBtnText = document.getElementById('runBtnText');
+            const resultViewer = document.getElementById('resultViewer');
+            
+            // Set Loading State
+            runBtn.disabled = true;
+            runBtnText.innerText = "Processing...";
+            showError("");
+            
+            resultViewer.innerHTML = `<div class="empty-state">
+                <i class='bx bx-loader-alt bx-spin' style="color: var(--brand-pink)"></i>
+                <p>Analyzing document...</p>
+            </div>`;
+
+            try {
+                const formData = new FormData();
+                formData.append('student_file', files.student);
+                if (files.key) {
+                    formData.append('answer_key_file', files.key);
+                }
+                formData.append('preprocess_mode', document.getElementById('preprocessMode').value);
+                formData.append('mode', document.getElementById('recognitionMode').value);
+                
+                if (_currentStudentInfo && _currentStudentInfo.full_name) {
+                    formData.append('student_name', _currentStudentInfo.full_name);
+                }
+                if (_currentStudentInfo && _currentStudentInfo.usn) {
+                    formData.append('student_usn_override', _currentStudentInfo.usn);
+                }
+
+                const token = localStorage.getItem('teacher_token');
+
+                const response = await fetch('/api/teachers/ocr/run', {
+                    method: 'POST',
+                    headers: { 'Authorization': `Bearer ${token}` },
+                    body: formData
+                });
+
+                if (response.status === 401) {
+                    logout();
+                    return;
+                }
+
+                const data = await response.json();
+                
+                if (data.status === "error") {
+                    throw new Error(data.message);
+                }
+
+                // Update _currentStudentInfo from server
+                if (data.student_info) {
+                    if (!_currentStudentInfo) _currentStudentInfo = {};
+                    _currentStudentInfo.usn = data.student_info.usn;
+                    if (data.student_info.full_name && data.student_info.full_name !== data.student_info.usn) {
+                        _currentStudentInfo.full_name = data.student_info.full_name;
+                    }
+                }
+
+                const studentUsn = (_currentStudentInfo && _currentStudentInfo.usn) ? _currentStudentInfo.usn : (data.student_info ? data.student_info.usn : '');
+                const studentName = (_currentStudentInfo && _currentStudentInfo.full_name) ? _currentStudentInfo.full_name : (data.student_info ? data.student_info.full_name : '');
+                const displayName = (studentName && studentName !== studentUsn) ? studentName : studentUsn;
+                const initials = getInitials(displayName);
+
+                // Build a score lookup from eval_summary
+                const scoreMap = {};
+                if (data.eval_summary) {
+                    data.eval_summary.forEach(e => { scoreMap[e.question] = e; });
+                }
+                _lastOcrData = data;
+
+                // Render student banner card
+                let bannerHtml = `
+                <div class="student-evaluation-badge-card">
+                    <div class="student-badge-left">
+                        <div class="student-avatar-circle" id="resBannerAvatar">${initials}</div>
+                        <div>
+                            <h4 class="student-badge-name" id="resBannerStudentName">${escapeHtml(displayName)}</h4>
+                            <div class="student-badge-sub">
+                                <span>USN / Username: <strong>${escapeHtml(studentUsn)}</strong></span> &bull; 
+                                <span>Total Marks: <strong style="color: var(--brand-pink);">${data.total_score}</strong></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button type="button" class="btn-secondary" style="font-size: 12px; padding: 6px 12px; cursor: pointer;" onclick="openStudentNameModal('${escapeHtml(studentUsn)}', '${escapeHtml(displayName)}')">
+                            <i class='bx bx-edit'></i> Edit Name
+                        </button>
+                        <a href="student-results.html" class="btn-view-all-results">
+                            <i class='bx bx-bar-chart-alt-2'></i> View in Student Results &rarr;
+                        </a>
+                    </div>
+                </div>`;
+
+                // Render structured Q&A blocks
+                if (data.qa_pairs && data.qa_pairs.length > 0) {
+                    let html = bannerHtml;
+                    data.qa_pairs.forEach(pair => {
+                        const scoreInfo = scoreMap[pair.question];
+                        const scoreBadge = scoreInfo
+                            ? `<span class="qa-score-badge">${scoreInfo.score} / ${scoreInfo.max_marks}</span>`
+                            : '';
+                        let answer = pair.answer || '(no answer detected)';
+                        
+                        answer = answer.replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                        answer = answer.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+                        answer = answer.replace(/\*([^*]+)\*/g, '<em>$1</em>');
+                        
+                        html += `
+                        <div class="qa-block">
+                            <div class="qa-block-header">
+                                <span class="qa-q-badge" style="background: var(--brand-pink); font-size: 14px; padding: 4px 12px;">Q ${pair.question}</span>
+                                ${scoreBadge}
+                            </div>
+                            <div class="qa-block-body">${answer}</div>
+                        </div>`;
+                    });
+                    if (data.eval_summary && data.eval_summary.length > 0) {
+                        html += `<div class="qa-block" style="border-left-color: var(--success-main);">
+                            <div class="qa-block-header">
+                                <span class="qa-q-badge" style="background: var(--success-main);">Total Score</span>
+                                <span class="qa-score-badge">${data.total_score}</span>
+                            </div>
+                        </div>`;
+                    }
+                    resultViewer.innerHTML = html;
+                } else {
+                    resultViewer.innerHTML = `<div class="empty-state"><i class='bx bx-info-circle'></i><p>No text was extracted.<br>Try a different preprocessing mode.</p></div>`;
+                }
+                
+                document.getElementById('statTime').innerText = data.processing_time;
+                document.getElementById('statQuality').innerText = data.recognition_quality;
+                document.getElementById('statLines').innerText = data.lines_detected;
+                
+                const warningsEl = document.getElementById('statWarnings');
+                if (data.warnings === "None" || !data.warnings) {
+                    warningsEl.innerText = "None";
+                    warningsEl.style.color = "var(--success-main)";
+                } else {
+                    warningsEl.innerText = data.warnings;
+                    warningsEl.style.color = "var(--warning-main)";
+                }
+
+                // Show Downloads
+                document.getElementById('downloadEmptyState').style.display = 'none';
+                document.getElementById('downloadActions').style.display = 'flex';
+
+                // Automatically trigger the Student Name modal if it's a new student or name missing
+                const needsNamePrompt = !studentName || studentName === studentUsn || (data.student_info && data.student_info.is_new);
+                if (needsNamePrompt && studentUsn) {
+                    openStudentNameModal(studentUsn, studentName);
+                }
+
+            } catch (err) {
+                showError("OCR Processing Failed: " + err.message);
+                resultViewer.innerHTML = `<div class="empty-state">
+                    <i class='bx bx-error-circle' style="color: var(--error-main)"></i>
+                    <p>Processing failed. Please try again.</p>
+                </div>`;
+            } finally {
+                // Reset Button
+                runBtn.disabled = false;
+                runBtnText.innerText = "Run OCR";
+            }
+        }
+
+        // Store last OCR data for downloads
+        let _lastOcrData = null;
+
+        function escapeCSV(str) {
+            if (str === null || str === undefined) return '""';
+            const s = String(str).replace(/"/g, '""');
+            return `"${s}"`;
+        }
+
+        function downloadCSV(type) {
+            if (!_lastOcrData) return;
+            let csvContent = "";
+            
+            if (type === 'qa') {
+                csvContent = "Question Number,Extracted Text\n";
+                (_lastOcrData.qa_pairs || []).forEach(p => {
+                    csvContent += `${escapeCSV(p.question)},${escapeCSV(p.answer)}\n`;
+                });
+            } else {
+                csvContent = "Question Number,Extracted Text,Marks Awarded,Max Marks\n";
+                const scoreMap = {};
+                (_lastOcrData.eval_summary || []).forEach(e => { scoreMap[e.question] = e; });
+                
+                (_lastOcrData.qa_pairs || []).forEach(p => {
+                    const score = scoreMap[p.question] ? scoreMap[p.question].score : "";
+                    const maxMarks = scoreMap[p.question] ? scoreMap[p.question].max_marks : "";
+                    csvContent += `${escapeCSV(p.question)},${escapeCSV(p.answer)},${escapeCSV(score)},${escapeCSV(maxMarks)}\n`;
+                });
+                csvContent += `\nTotal Score,,,${_lastOcrData.total_score}\n`;
+                csvContent += `Processing Time,,,${_lastOcrData.processing_time}\n`;
+            }
+            
+            // Add BOM so Excel opens UTF-8 properly
+            const bom = new Uint8Array([0xEF, 0xBB, 0xBF]);
+            const blob = new Blob([bom, csvContent], { type: "text/csv;charset=utf-8;" });
+            const url = URL.createObjectURL(blob);
+            
+            const a = document.createElement('a');
+            a.setAttribute("href", url);
+            a.setAttribute("download", `evaluation_${type}_${new Date().toISOString().slice(0,10)}.csv`);
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+        }
+    </script>
+
+    <!-- NEW STUDENT DETAILS MODAL POPUP -->
+    <div id="studentNameModal" class="student-name-modal-backdrop" style="display: none;">
+        <div class="student-name-modal-dialog">
+            <div class="modal-dialog-header">
+                <div class="modal-icon-wrap">
+                    <i class='bx bx-user-plus'></i>
+                </div>
+                <div style="flex: 1;">
+                    <h3 style="margin: 0; font-size: 18px; color: var(--text-primary); font-weight: 700;">Student Details Required</h3>
+                    <p style="margin: 4px 0 0; font-size: 13px; color: var(--text-secondary);">Assign the student's actual name to record this evaluation in the database.</p>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="closeStudentNameModal()">&times;</button>
+            </div>
+            <div class="modal-dialog-body">
+                <div class="dialog-field-group">
+                    <label>Student USN / Username</label>
+                    <div class="input-with-icon">
+                        <i class='bx bx-id-card'></i>
+                        <input type="text" id="modalStudentUsn" readonly class="readonly-field" />
+                    </div>
+                </div>
+                <div class="dialog-field-group">
+                    <label>Student Full Name <span style="color: var(--brand-pink); font-weight: bold;">*</span></label>
+                    <div class="input-with-icon">
+                        <i class='bx bx-user'></i>
+                        <input type="text" id="modalStudentFullName" placeholder="Enter student's full name (e.g. Aarav Sharma)" required />
+                    </div>
+                    <span class="field-hint">This name will be stored in MySQL and shown across all student & teacher results dashboards.</span>
+                </div>
+            </div>
+            <div class="modal-dialog-footer">
+                <button type="button" class="btn-dialog-secondary" onclick="closeStudentNameModal()">Skip</button>
+                <button type="button" class="btn-dialog-primary" onclick="confirmStudentNameAndSave()">
+                    <i class='bx bx-check-circle'></i> Save & Record Result
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+    /* Student Name Modal Styling */
+    .student-name-modal-backdrop {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 99999;
+        padding: 20px;
+        animation: fadeInModal 0.25s ease-out;
+    }
+    @keyframes fadeInModal {
+        from { opacity: 0; transform: scale(0.97); }
+        to { opacity: 1; transform: scale(1); }
+    }
+    .student-name-modal-dialog {
+        background: #ffffff;
+        border-radius: 16px;
+        box-shadow: 0 20px 40px -15px rgba(16, 42, 86, 0.25), 0 0 0 1px rgba(226, 232, 240, 0.8);
+        width: 100%;
+        max-width: 500px;
+        overflow: hidden;
+        display: flex;
+        flex-direction: column;
+    }
+    .modal-dialog-header {
+        padding: 20px 24px;
+        border-bottom: 1px solid #f1f5f9;
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .modal-icon-wrap {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: var(--brand-pink-light);
+        color: var(--brand-pink);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        flex-shrink: 0;
+    }
+    .btn-close-modal {
+        background: none;
+        border: none;
+        font-size: 24px;
+        color: #94a3b8;
+        cursor: pointer;
+        line-height: 1;
+        padding: 4px;
+        transition: color 0.15s;
+    }
+    .btn-close-modal:hover {
+        color: #1e293b;
+    }
+    .modal-dialog-body {
+        padding: 24px;
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+    }
+    .dialog-field-group {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+    }
+    .dialog-field-group label {
+        font-size: 13px;
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+    .input-with-icon {
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+    .input-with-icon i {
+        position: absolute;
+        left: 14px;
+        color: #94a3b8;
+        font-size: 18px;
+    }
+    .input-with-icon input {
+        width: 100%;
+        padding: 10px 14px 10px 40px;
+        border: 1px solid #e2e8f0;
+        border-radius: 8px;
+        font-size: 14px;
+        color: #1e293b;
+        outline: none;
+        transition: border-color 0.15s, box-shadow 0.15s;
+    }
+    .input-with-icon input:focus {
+        border-color: var(--brand-pink);
+        box-shadow: 0 0 0 3px rgba(236, 43, 120, 0.15);
+    }
+    .input-with-icon input.readonly-field {
+        background: #f8fafc;
+        color: #475569;
+        font-weight: 600;
+        border-color: #cbd5e1;
+        cursor: not-allowed;
+    }
+    .field-hint {
+        font-size: 12px;
+        color: #64748b;
+        margin-top: 2px;
+    }
+    .modal-dialog-footer {
+        padding: 16px 24px;
+        background: #f8fafc;
+        border-top: 1px solid #f1f5f9;
+        display: flex;
+        justify-content: flex-end;
+        gap: 12px;
+    }
+    .btn-dialog-secondary {
+        padding: 9px 18px;
+        border: 1px solid #cbd5e1;
+        background: #ffffff;
+        border-radius: 8px;
+        color: #475569;
+        font-weight: 600;
+        font-size: 13px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .btn-dialog-secondary:hover {
+        background: #f1f5f9;
+    }
+    .btn-dialog-primary {
+        padding: 9px 20px;
+        background: var(--brand-pink);
+        border: none;
+        border-radius: 8px;
+        color: #ffffff;
+        font-weight: 600;
+        font-size: 13px;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        cursor: pointer;
+        transition: background 0.15s;
+    }
+    .btn-dialog-primary:hover {
+        background: var(--brand-pink-hover);
+    }
+
+    /* Student Evaluation Banner in Results */
+    .student-evaluation-badge-card {
+        background: #ffffff;
+        border: 1px solid #e2e8f0;
+        border-left: 4px solid var(--brand-pink);
+        border-radius: 12px;
+        padding: 14px 18px;
+        margin-bottom: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        box-shadow: 0 2px 8px rgba(16, 42, 86, 0.04);
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .student-badge-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+    .student-avatar-circle {
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        background: #eff6ff;
+        color: #2563eb;
+        font-weight: 700;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 16px;
+        border: 1px solid #bfdbfe;
+    }
+    .student-badge-name {
+        margin: 0;
+        font-size: 16px;
+        font-weight: 700;
+        color: var(--text-primary);
+    }
+    .student-badge-sub {
+        font-size: 13px;
+        color: var(--text-secondary);
+        margin-top: 3px;
+    }
+    .badge-score-pill {
+        background: var(--brand-pink-ultralight);
+        color: var(--brand-pink);
+        border: 1px solid var(--brand-pink-light);
+        border-radius: 20px;
+        padding: 6px 14px;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .btn-view-all-results {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        background: #f1f5f9;
+        border: 1px solid #cbd5e1;
+        color: var(--text-primary);
+        padding: 8px 14px;
+        border-radius: 8px;
+        font-size: 13px;
+        font-weight: 600;
+        text-decoration: none;
+        transition: all 0.15s;
+    }
+    .btn-view-all-results:hover {
+        background: #e2e8f0;
+        color: #0f172a;
+    }
+    </style>
+</body>
+</html>
